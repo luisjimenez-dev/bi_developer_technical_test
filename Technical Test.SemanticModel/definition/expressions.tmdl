@@ -29,7 +29,7 @@ expression src_Sales =
 
 	annotation PBI_ResultType = Table
 
-expression folderPath = "C:\Users\ljt18\Documents\Luis\PBI\pruebas\bi_developer_technical_test\" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+expression folderPath = "C:\Users\ljt18\Documents\Luis\PBI\pruebas\bi_developer_technical_test\sources\" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
 	lineageTag: 7998d3cf-c0ec-44e2-8801-357c7050f333
 	queryGroup: Utils\Parameters
 
@@ -132,16 +132,16 @@ expression Missing =
 		    Products = stg_Products,
 		
 		    // Verificar UserID
-		    #"Merge Users" = Table.NestedJoin(Sales, {"UserID"}, Users, {"UserID"}, "UserMatch", JoinKind.LeftOuter),
-		    #"Expanded UserMatch" = Table.ExpandTableColumn(#"Merge Users", "UserMatch", {"Email"}, {"Email"}),
-		    AddUserCheck = Table.AddColumn(#"Expanded UserMatch", "UserExists", each [Email] <> null, type logical),
+		    #"Merge Users" = Table.NestedJoin(Sales, {"UserID"}, Users, {"UserID"}, "User Match", JoinKind.LeftOuter),
+		    #"Expanded UserMatch" = Table.ExpandTableColumn(#"Merge Users", "User Match", {"Email"}, {"Email"}),
+		    AddUserCheck = Table.AddColumn(#"Expanded UserMatch", "User Exists", each [Email] <> null, type logical),
 		
-		    MergeProducts = Table.NestedJoin(AddUserCheck, {"ProductID"}, Products, {"ProductID"}, "ProductMatch", JoinKind.LeftOuter),
-		    #"Expanded ProductMatch" = Table.ExpandTableColumn(MergeProducts, "ProductMatch", {"Product"}, {"Product"}),
-		    AddProductCheck = Table.AddColumn( #"Expanded ProductMatch", "ProductExists", each [Product] <> null, type logical),
-		    #"Filtered Rows" = Table.SelectRows(AddProductCheck, each [UserExists] = false or [ProductExists] = false),
-		    #"Removed Other Columns" = Table.SelectColumns(#"Filtered Rows",{"SourceName", "Row", "ProductID", "UserID", "Email", "UserExists", "Product", "ProductExists"}),
-		    #"Removed Duplicates" = Table.Distinct(#"Removed Other Columns", {"UserID", "ProductID", "Row", "SourceName"})
+		    MergeProducts = Table.NestedJoin(AddUserCheck, {"ProductID"}, Products, {"ProductID"}, "Product Match", JoinKind.LeftOuter),
+		    #"Expanded ProductMatch" = Table.ExpandTableColumn(MergeProducts, "Product Match", {"Product"}, {"Product"}),
+		    AddProductCheck = Table.AddColumn( #"Expanded ProductMatch", "Product Exists", each [Product] <> null, type logical),
+		    #"Filtered Rows" = Table.SelectRows(AddProductCheck, each [User Exists] = false or [Product Exists] = false),
+		    #"Removed Other Columns" = Table.SelectColumns(#"Filtered Rows",{"Source Name", "Row", "ProductID", "UserID", "Email", "User Exists", "Product", "Product Exists"}),
+		    #"Removed Duplicates" = Table.Distinct(#"Removed Other Columns", {"UserID", "ProductID", "Row", "Source Name"})
 		in
 		    #"Removed Duplicates"
 	lineageTag: 642814be-0365-4db9-bdd0-da37f8732883

@@ -4091,7 +4091,7 @@ cultureInfo en-US
 			      "Definition": {
 			        "Binding": {
 			          "ConceptualEntity": "Measures Sales",
-			          "ConceptualProperty": "_Transaction Details Title"
+			          "ConceptualProperty": "_Title Detailed Transactions by Country"
 			        }
 			      },
 			      "State": "Generated",

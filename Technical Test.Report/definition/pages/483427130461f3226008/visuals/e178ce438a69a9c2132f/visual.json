@@ -4,7 +4,7 @@
   "position": {
     "x": 22.594013814274749,
     "y": 100.19953952417497,
-    "z": 3001,
+    "z": 3500,
     "height": 596.2854950115119,
     "width": 618.87950882578662,
     "tabOrder": 11004
@@ -373,7 +373,7 @@
                     }
                   },
                   {
-                    "value": ", making it easier to analyze the data.",
+                    "value": ", making it easier to interpret the data.",
                     "textStyle": {
                       "fontSize": "10.5pt"
                     }
@@ -435,6 +435,21 @@
                 ]
               }
             ]
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Text box 1'"
+                }
+              }
+            }
           }
         }
       ]

@@ -4,7 +4,7 @@
   "position": {
     "x": 640.4911742133537,
     "y": 100.19953952417497,
-    "z": 3002,
+    "z": 3000,
     "height": 259.33998465080583,
     "width": 616.91481197237135,
     "tabOrder": 11005
@@ -134,7 +134,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Despite it being a preview feature, the Shape Map is stable and fully supported in the Power BI Service. Other options like Map and Filled Map will be deprecated soon, and Azure Maps is not universally available. I consider using Shape Map is considered the most appropriate choice.",
+                    "value": "Despite it being a preview feature, the Shape Map is stable and fully supported in the Power BI Service. Other options like Map and Filled Map will be deprecated soon, and Azure Maps is not universally available. I consider using Shape Map is the most appropriate choice.",
                     "textStyle": {
                       "fontSize": "10.5pt"
                     }
@@ -143,6 +143,21 @@
                 "listType": "bullet"
               }
             ]
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Text box 2'"
+                }
+              }
+            }
           }
         }
       ]

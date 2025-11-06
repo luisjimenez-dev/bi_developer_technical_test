@@ -4,7 +4,7 @@
   "position": {
     "x": 103.14658480429776,
     "y": 19.646968534151956,
-    "z": 2000,
+    "z": 2500,
     "height": 40.276285495011507,
     "width": 355.61013046815037,
     "tabOrder": 11002
@@ -72,8 +72,22 @@
             }
           }
         }
+      ],
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Text Title'"
+                }
+              }
+            }
+          }
+        }
       ]
     },
     "drillFilterOtherVisuals": true
-  }
+  },
+  "parentGroupName": "a70392078e34a97dedd2"
 }

@@ -4,7 +4,7 @@
   "position": {
     "x": 11.428571428571429,
     "y": 91.428571428571431,
-    "z": 2000,
+    "z": 1250,
     "height": 617.14285714285722,
     "width": 1258.5714285714287,
     "tabOrder": 1000
@@ -227,7 +227,7 @@
                       "Entity": "Measures Sales"
                     }
                   },
-                  "Property": "_Transaction Details Title"
+                  "Property": "_Title Detailed Transactions by Country"
                 }
               }
             },

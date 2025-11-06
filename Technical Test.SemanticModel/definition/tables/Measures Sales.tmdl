@@ -53,8 +53,7 @@ table 'Measures Sales'
 		lineageTag: 8c120edc-a688-484c-b108-292d21ff8b91
 
 	/// Description
-	measure '_Transaction Details Title' = "Transaction Details - " & [_Selected Country]
-		formatString: #,0
+	measure '_Title Detailed Transactions by Country' = "Detailed transactions - " & [_Selected Country]
 		displayFolder: Visual
 		lineageTag: 5e645117-d740-4a37-a39f-fedd4ab1d022
 
