@@ -24,7 +24,7 @@ Although `.pbix` files are generally not ideal for storing in GitHub, this repor
 
 ## Files in the Repository
 - `Technical Test.pbix` – Power BI report with embedded data.  
-- `Technical Test.pbip` and assoiated folders – Power BI project template.  
+- `Technical Test.pbip` and associated folders – Power BI project template.  
 - `Products.xlsx`, `Sales_1.csv`, `Sales_2.csv`, `users.csv` – Source data files. 
 - `Power BI test.md` – Task requirements.  
 
