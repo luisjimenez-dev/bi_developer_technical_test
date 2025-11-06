@@ -1,0 +1,152 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.3.0/schema.json",
+  "name": "29ed574e2f7d1b39fa70",
+  "position": {
+    "x": 640.4911742133537,
+    "y": 100.19953952417497,
+    "z": 3002,
+    "height": 259.33998465080583,
+    "width": 616.91481197237135,
+    "tabOrder": 11005
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "Visualization",
+                    "textStyle": {
+                      "fontWeight": "bold"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "I was unsure about wether the ",
+                    "textStyle": {
+                      "fontSize": "10.5pt"
+                    }
+                  },
+                  {
+                    "value": "Country Interaction on the requirements was referring ",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "10.5pt"
+                    }
+                  },
+                  {
+                    "value": "to the top 5 countries. Given the minimal number of visuals required, I added a ",
+                    "textStyle": {
+                      "fontSize": "10.5pt"
+                    }
+                  },
+                  {
+                    "value": "country map",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "10.5pt"
+                    }
+                  },
+                  {
+                    "value": ".",
+                    "textStyle": {
+                      "fontSize": "10.5pt"
+                    }
+                  }
+                ],
+                "listType": "bullet"
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "The country map also allows to visualize the revenue by last name when you hover over a country aswell as ",
+                    "textStyle": {
+                      "fontSize": "10.5pt"
+                    }
+                  },
+                  {
+                    "value": "drill-down",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "10.5pt"
+                    }
+                  },
+                  {
+                    "value": " to transaction-level details for countries not in the top 5.",
+                    "textStyle": {
+                      "fontSize": "10.5pt"
+                    }
+                  }
+                ],
+                "listType": "bullet"
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "A ",
+                    "textStyle": {
+                      "fontSize": "10.5pt"
+                    }
+                  },
+                  {
+                    "value": "Shape Map",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "10.5pt"
+                    }
+                  },
+                  {
+                    "value": " visual was used for the country map. In Power BI Desktop, you may need to go to ",
+                    "textStyle": {
+                      "fontSize": "10.5pt"
+                    }
+                  },
+                  {
+                    "value": "File > Options and Settings > Options > Preview Features",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "10.5pt"
+                    }
+                  },
+                  {
+                    "value": " and enable the Shape Map visual.",
+                    "textStyle": {
+                      "fontSize": "10.5pt"
+                    }
+                  }
+                ],
+                "listType": "bullet"
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Despite it being a preview feature, the Shape Map is stable and fully supported in the Power BI Service. Other options like Map and Filled Map will be deprecated soon, and Azure Maps is not universally available. I consider using Shape Map is considered the most appropriate choice.",
+                    "textStyle": {
+                      "fontSize": "10.5pt"
+                    }
+                  }
+                ],
+                "listType": "bullet"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

@@ -1,0 +1,175 @@
+/// Description
+table 'Fact Sales'
+	lineageTag: 5b4bad57-aa51-4048-8cef-c1121f2cb4ff
+
+	/// Description
+	column SalesSK
+		dataType: int64
+		isHidden
+		formatString: 0
+		isAvailableInMdx: false
+		lineageTag: 0b501f74-97f9-41fc-9ab2-72f9a4c7191c
+		summarizeBy: none
+		sourceColumn: SalesSK
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Description
+	column 'Source Name'
+		dataType: string
+		lineageTag: c09f3483-13d3-4991-91ad-a19409f1b93c
+		summarizeBy: none
+		sourceColumn: Source Name
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Description
+	column Row
+		dataType: int64
+		formatString: 0
+		lineageTag: d7526f60-840c-4b0e-a10b-7c8182269d52
+		summarizeBy: none
+		sourceColumn: Row
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Description
+	column Price
+		dataType: decimal
+		lineageTag: e12b6760-5223-40b4-9ed5-f1ef39f19d81
+		summarizeBy: none
+		sourceColumn: Price
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	/// Description
+	column Units
+		dataType: int64
+		formatString: 0
+		lineageTag: a9a2d0e0-ad9e-471e-8e51-38b1217820ed
+		summarizeBy: none
+		sourceColumn: Units
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Description
+	column Discount
+		dataType: decimal
+		lineageTag: 886e8fd1-16af-43d1-bd9c-58ff84b65173
+		summarizeBy: none
+		sourceColumn: Discount
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	/// Description
+	column Revenue
+		dataType: decimal
+		lineageTag: 5432d406-85b3-4c46-8e0e-b42876531ab7
+		summarizeBy: none
+		sourceColumn: Revenue
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	/// Description
+	column TransactionDateID
+		dataType: int64
+		isHidden
+		formatString: 0
+		isAvailableInMdx: false
+		lineageTag: 1a8b8c95-9277-42f1-9d8a-34ad1df81be4
+		summarizeBy: none
+		sourceColumn: TransactionDateID
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Description
+	column DepartureDateID
+		dataType: int64
+		isHidden
+		formatString: 0
+		isAvailableInMdx: false
+		lineageTag: d0ca5b59-5acf-422c-a19c-66e23a91e20f
+		summarizeBy: none
+		sourceColumn: DepartureDateID
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Description
+	column UserSK
+		dataType: int64
+		isHidden
+		isAvailableInMdx: false
+		lineageTag: bcc69d10-ecea-4b4a-a755-29771d24e3e3
+		summarizeBy: none
+		sourceColumn: UserSK
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	/// Description
+	column ProductSK
+		dataType: int64
+		isHidden
+		isAvailableInMdx: false
+		lineageTag: 492ea191-5a77-4835-8b01-02a22b941201
+		summarizeBy: none
+		sourceColumn: ProductSK
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	/// Description
+	column 'Transaction Time'
+		dataType: dateTime
+		formatString: Long Time
+		lineageTag: 6a658571-c759-4938-a9ca-37cff6f13f9c
+		summarizeBy: none
+		sourceColumn: Transaction Time
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Time
+
+	/// Description
+	column 'Departure Time'
+		dataType: dateTime
+		formatString: Long Time
+		lineageTag: a167abf2-0fab-4938-b7a6-b934620d5b43
+		summarizeBy: none
+		sourceColumn: Departure Time
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Time
+
+	partition 'Fact Sales' = m
+		mode: import
+		queryGroup: '03 Load'
+		source =
+				let
+				    Source = stg_Sales,
+				    #"Merged Queries" = Table.NestedJoin(Source, {"ProductID"}, #"Dim Products", {"ProductID"}, "dim_Products", JoinKind.LeftOuter),
+				    #"Expanded dim_Products" = Table.ExpandTableColumn(#"Merged Queries", "dim_Products", {"ProductSK"}, {"ProductSK"}),
+				    #"Replaced Value" = Table.TransformColumnTypes(Table.ReplaceValue(#"Expanded dim_Products",null,unknownSK,Replacer.ReplaceValue,{"ProductSK"}), {{"ProductSK", Int64.Type}}),
+				    #"Merged Queries1" = Table.NestedJoin(#"Replaced Value", {"UserID"}, #"Dim Users", {"UserID"}, "dim_Users", JoinKind.LeftOuter),
+				    #"Expanded dim_Users" = Table.ExpandTableColumn(#"Merged Queries1", "dim_Users", {"UserSK"}, {"UserSK"}),
+				    #"Replaced Value1" = Table.TransformColumnTypes(Table.ReplaceValue(#"Expanded dim_Users",null,unknownSK,Replacer.ReplaceValue,{"UserSK"}), {{"UserSK", Int64.Type}}),
+				    #"Reordered Columns" = Table.ReorderColumns(#"Replaced Value1",{"SalesSK", "Source Name", "Row", "UserSK", "ProductSK", "TransactionDateID", "DepartureDateID", "ProductID", "UserID", "Price", "Units", "Discount", "Revenue", "Transaction Time", "Departure Time"}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Reordered Columns",{"ProductID", "UserID"})
+				in
+				    #"Removed Columns"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

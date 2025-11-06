@@ -1,0 +1,83 @@
+/// Description
+table 'Measures Sales'
+	lineageTag: 5886e7aa-7850-4a9d-b080-89735ecc0bd3
+
+	/// Description
+	measure _Revenue = SUM('Fact Sales'[Revenue])
+		formatString: #,##0.00 €
+		lineageTag: e5d35ac4-47b8-4ae1-91db-93da86a75619
+
+	/// Description
+	measure _Transactions = COUNTROWS('Fact Sales')
+		formatString: #,0
+		lineageTag: 3033465b-27e9-409b-9b03-14e1d3335be3
+
+	/// Description
+	measure '_% Revenue by Category' = DIVIDE([_Revenue], CALCULATE([_Revenue], ALLEXCEPT('Dim Products', 'Dim Products'[Product Category])), 0)
+		formatString: #,0.0%;-#,0.0%;#,0.0%
+		lineageTag: 6d396b97-00ab-4857-a793-049860443a55
+
+	/// Description
+	measure '_% Revenue Matrix' = ```
+			
+			SWITCH(
+			    TRUE(),
+			    ISINSCOPE('Dim Products'[Product]),
+			        [_% Revenue by Category],
+			
+			    ISINSCOPE('Dim Products'[Product Category]),
+			        [_% Total Revenue],
+			
+			    [_% Total Revenue]
+			)
+			
+			```
+		formatString: #,0.0%;-#,0.0%;#,0.0%
+		displayFolder: Visual
+		lineageTag: 7591407d-4a46-43bf-9f74-02a61b83f47e
+
+	/// Description
+	measure '_% Total Revenue' = DIVIDE([_Revenue], CALCULATE([_Revenue], ALL('Fact Sales')), 0)
+		formatString: #,0.0%;-#,0.0%;#,0.0%
+		lineageTag: 809c59ee-9bd8-4788-baf4-4637323c2311
+
+	/// Description
+	measure '_Distinct Users' = DISTINCTCOUNT('Fact Sales'[UserSK])
+		formatString: #,0
+		lineageTag: 1f6308cb-842a-4a7a-afd2-1abd992897db
+
+	/// Description
+	measure '_Selected Country' = SELECTEDVALUE('Dim Users'[Country], "All countries")
+		formatString: #,0
+		displayFolder: Visual
+		lineageTag: 8c120edc-a688-484c-b108-292d21ff8b91
+
+	/// Description
+	measure '_Transaction Details Title' = "Transaction Details - " & [_Selected Country]
+		formatString: #,0
+		displayFolder: Visual
+		lineageTag: 5e645117-d740-4a37-a39f-fedd4ab1d022
+
+	/// Description
+	measure '_Transactions by Departure Date' =
+			CALCULATE(
+			    COUNTROWS('Fact Sales'),
+			    USERELATIONSHIP('Fact Sales'[DepartureDateID], 'Dim Calendar'[DateID])
+			)
+		formatString: #,0
+		lineageTag: 88e93204-b242-44db-8926-50c909ca6ed8
+
+	partition 'Measures Sales' = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Column1 = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Column1", type text}}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"Column1"})
+				in
+				    #"Removed Columns"
+
+	changedProperty = Name
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,163 @@
+{
+  "version": "1.1.0",
+  "diagrams": [
+    {
+      "ordinal": 0,
+      "scrollPosition": {
+        "x": 0,
+        "y": 0
+      },
+      "nodes": [
+        {
+          "location": {
+            "x": 610,
+            "y": 0
+          },
+          "nodeIndex": "Dim Calendar",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 696,
+            "y": 387
+          },
+          "nodeIndex": "Dim Products",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 41.100056087139023,
+            "y": 0
+          },
+          "nodeIndex": "Dim Users",
+          "size": {
+            "height": 224,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 277.10005608713891,
+            "y": 243
+          },
+          "nodeIndex": "Fact Sales",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 0,
+            "y": 610.5
+          },
+          "nodeIndex": "Measures Sales",
+          "nodeLineageTag": "5886e7aa-7850-4a9d-b080-89735ecc0bd3",
+          "size": {
+            "height": 104,
+            "width": 234
+          },
+          "zIndex": 0
+        }
+      ],
+      "name": "All tables",
+      "zoomValue": 100,
+      "pinKeyFieldsToTop": false,
+      "showExtraHeaderInfo": false,
+      "hideKeyFieldsWhenCollapsed": false,
+      "tablesLocked": false
+    },
+    {
+      "ordinal": 1,
+      "scrollPosition": {
+        "x": 31.387670427327976,
+        "y": 0
+      },
+      "nodes": [
+        {
+          "location": {
+            "x": 949.38767042732786,
+            "y": 0
+          },
+          "nodeIndex": "Measures Sales",
+          "nodeLineageTag": "5886e7aa-7850-4a9d-b080-89735ecc0bd3",
+          "size": {
+            "height": 128,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 193.01232518176187,
+            "y": 129.17933551314167
+          },
+          "nodeIndex": "Fact Sales",
+          "nodeLineageTag": "5b4bad57-aa51-4048-8cef-c1121f2cb4ff",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 50,
+            "y": 551.87567105995663
+          },
+          "nodeIndex": "Dim Users",
+          "nodeLineageTag": "f810dc13-015a-4915-bcbf-9c47e204522c",
+          "size": {
+            "height": 224,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 497.38767042732803,
+            "y": -50
+          },
+          "nodeIndex": "Dim Products",
+          "nodeLineageTag": "e6cdff4f-75c7-4c92-9c6e-c5ff2905413c",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 443.77974080988588,
+            "y": 553.83679934964471
+          },
+          "nodeIndex": "Dim Calendar",
+          "nodeLineageTag": "ea140923-001a-425d-8ff9-2ddafb427b89",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        }
+      ],
+      "name": "Sales Model",
+      "zoomValue": 100,
+      "pinKeyFieldsToTop": false,
+      "showExtraHeaderInfo": false,
+      "hideKeyFieldsWhenCollapsed": false,
+      "tablesLocked": false
+    }
+  ],
+  "selectedDiagram": "Sales Model",
+  "defaultDiagram": "All tables"
+}

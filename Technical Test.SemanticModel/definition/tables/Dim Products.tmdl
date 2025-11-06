@@ -1,0 +1,87 @@
+/// Description
+table 'Dim Products'
+	lineageTag: e6cdff4f-75c7-4c92-9c6e-c5ff2905413c
+
+	/// Description
+	column ProductSK
+		dataType: int64
+		isHidden
+		isKey
+		formatString: 0
+		isAvailableInMdx: false
+		lineageTag: a4f8f10f-19c4-45e7-9831-c9398652d170
+		summarizeBy: none
+		sourceColumn: ProductSK
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Description
+	column ProductID
+		dataType: int64
+		formatString: 0
+		lineageTag: cec3ecf3-e066-40e7-aca5-bf6903c9efe9
+		summarizeBy: none
+		sourceColumn: ProductID
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Description
+	column Product
+		dataType: string
+		lineageTag: b635284b-12c5-4da0-b004-e861d5fc7132
+		summarizeBy: none
+		sourceColumn: Product
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Description
+	column Description
+		dataType: string
+		lineageTag: 40ad38a1-87ef-415b-be25-626e0c8fb777
+		summarizeBy: none
+		sourceColumn: Description
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Description
+	column 'Product Category'
+		dataType: string
+		lineageTag: 864b0f4b-dcce-4418-acd1-f44731f34e86
+		summarizeBy: none
+		sourceColumn: Product Category
+
+		annotation SummarizationSetBy = Automatic
+
+	hierarchy 'Product Category Hierarchy'
+		lineageTag: c18c0b44-c296-4e59-8d73-c0b1581e7b22
+
+		level 'Product Category'
+			lineageTag: a07bec20-a718-47fb-a76d-e7e2d260ffbe
+			column: 'Product Category'
+
+		level Product
+			lineageTag: e70acd92-5b47-4efb-b65f-6fe6e8d2f5bc
+			column: Product
+
+	partition 'Dim Products' = m
+		mode: import
+		queryGroup: '03 Load'
+		source =
+				let
+				    Source = stg_Products,
+				    #"Reordered Columns" = Table.ReorderColumns(Source,{"ProductSK", "ProductID", "Product", "Description", "Product Category"}),
+				    #"Unknown Product" = #table(
+				        Table.ColumnNames(#"Reordered Columns"),
+				        {
+				            {unknownSK, unknownID, unknownDescription, unknownDescription, unknownDescription}
+				        }
+				    ),
+				    TypedSource = Value.ReplaceType(#"Unknown Product", Value.Type(#"Reordered Columns")),
+				    FinalProducts = Table.Combine({#"Reordered Columns", TypedSource})
+				in
+				    FinalProducts
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

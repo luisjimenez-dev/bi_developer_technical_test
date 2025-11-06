@@ -1,0 +1,224 @@
+expression src_Products =
+		let
+		    Source = Excel.Workbook(File.Contents(folderPath & "Products.xlsx"), null, true),
+		    Table1_Table = Source{[Item="Table1",Kind="Table"]}[Data],
+		    #"Columnas con nombre cambiado" = Table.RenameColumns(Table1_Table,{{"ID", "ProductID"}})
+		in
+		    #"Columnas con nombre cambiado"
+	lineageTag: 98a5c7f3-0398-433f-8c15-db7eebddc68c
+	queryGroup: '01 Source'
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression src_Sales =
+		let
+		    Source = Folder.Files(folderPath),
+		    #"Filtered Rows" = Table.SelectRows(Source, each Text.Contains([Name], "Sales")),
+		    #"Invoked Custom Function" = Table.AddColumn(#"Filtered Rows", "Csv Content", each LoadCsv([Content], ",", 1252)),
+		    #"Removed Other Columns" = Table.SelectColumns(#"Invoked Custom Function",{"Name", "Csv Content"}),
+		    #"Expanded Csv Content" = Table.ExpandTableColumn(#"Removed Other Columns", "Csv Content", SalesColumns),
+		    #"Renamed Columns" = Table.RenameColumns(#"Expanded Csv Content",{{"Name", "Source Name"}, {"User", "UserID"}, {"TransactionDate", "Transaction Date Epoch"}, {"DepartureDate", "Departure Date Epoch"}})
+		in
+		    #"Renamed Columns"
+	lineageTag: acb3aa46-1b89-4f0d-b0a1-49cb7e52450d
+	queryGroup: '01 Source'
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression folderPath = "C:\Users\ljt18\Documents\Luis\PBI\Ryanair\Power BI test\Current\" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: 7998d3cf-c0ec-44e2-8801-357c7050f333
+	queryGroup: Utils\Parameters
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Text
+
+expression LoadCsv =
+		let
+		    Source = (file as binary, delimiter as text, encoding as number) => let
+		        Source = Csv.Document(file,[Delimiter=delimiter, Encoding=encoding, QuoteStyle=QuoteStyle.None]),
+		        #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true])
+		    in
+		        #"Promoted Headers"
+		in
+		    Source
+	lineageTag: 6d97fc4b-1bc6-4495-a493-16afdfe63486
+	queryGroup: Utils
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Function
+
+expression SalesColumns =
+		let
+		  Source = {"Row", "ProductID", "TransactionDate", "User", "Price", "Units", "Discount", "DepartureDate"}
+		
+		in
+		  Source
+	lineageTag: f5a6a78d-944a-41c7-8aed-098c91a2b15e
+	queryGroup: Utils\Columns
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = List
+
+expression src_Users =
+		let
+		    Source = LoadCsv(File.Contents(folderPath & "users.csv"), ",", 1252),
+		    #"Columnas con nombre cambiado" = Table.RenameColumns(Source,{{"id", "UserID"}, {"first_name", "First Name"}, {"last_name", "Last Name"}, {"email", "Email"}, {"country", "Country"}})
+		in
+		    #"Columnas con nombre cambiado"
+	lineageTag: 99ba1709-e3b6-463a-86ed-540e130b8765
+	queryGroup: '01 Source'
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression TimestampToUTC =
+		(ms as number) as datetime =>
+		    #datetime(1970,1,1,0, 0, 0) + #duration(0,0,0, ms / 1000)
+	lineageTag: 9a8faab7-2642-4702-9f8a-df28eb5b5f60
+	queryGroup: Utils
+
+	annotation PBI_NavigationStepName = Navegación
+
+	annotation PBI_ResultType = Function
+
+expression LocalTime =
+		let
+		    Source = DateTimeZone.LocalNow()
+		in
+		    Source
+	lineageTag: c6c6e948-db4b-4e21-baf4-bb3596ebd110
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = DateTimeZone
+
+expression unknownID = -1 meta [IsParameterQuery=true, Type="Number", IsParameterQueryRequired=true]
+	lineageTag: ac5a8a58-ce0c-46c7-b597-58cec3c34081
+	queryGroup: Utils\Parameters
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Number
+
+expression unknownSK = -1 meta [IsParameterQuery=true, Type="Number", IsParameterQueryRequired=true]
+	lineageTag: 66a9814e-984b-4f6a-ac21-dc836dda1776
+	queryGroup: Utils\Parameters
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Number
+
+expression unknownDescription = "Unknown" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: 805b1a4b-eb52-45a8-9d9a-6a61e08126c9
+	queryGroup: Utils\Parameters
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Text
+
+expression Missing =
+		let
+		    // Cargar las tablas
+		    Sales = stg_Sales,
+		    Users = stg_Users,
+		    Products = stg_Products,
+		
+		    // Verificar UserID
+		    #"Merge Users" = Table.NestedJoin(Sales, {"UserID"}, Users, {"UserID"}, "UserMatch", JoinKind.LeftOuter),
+		    #"Expanded UserMatch" = Table.ExpandTableColumn(#"Merge Users", "UserMatch", {"Email"}, {"Email"}),
+		    AddUserCheck = Table.AddColumn(#"Expanded UserMatch", "UserExists", each [Email] <> null, type logical),
+		
+		    MergeProducts = Table.NestedJoin(AddUserCheck, {"ProductID"}, Products, {"ProductID"}, "ProductMatch", JoinKind.LeftOuter),
+		    #"Expanded ProductMatch" = Table.ExpandTableColumn(MergeProducts, "ProductMatch", {"Product"}, {"Product"}),
+		    AddProductCheck = Table.AddColumn( #"Expanded ProductMatch", "ProductExists", each [Product] <> null, type logical),
+		    #"Filtered Rows" = Table.SelectRows(AddProductCheck, each [UserExists] = false or [ProductExists] = false),
+		    #"Removed Other Columns" = Table.SelectColumns(#"Filtered Rows",{"SourceName", "Row", "ProductID", "UserID", "Email", "UserExists", "Product", "ProductExists"}),
+		    #"Removed Duplicates" = Table.Distinct(#"Removed Other Columns", {"UserID", "ProductID", "Row", "SourceName"})
+		in
+		    #"Removed Duplicates"
+	lineageTag: 642814be-0365-4db9-bdd0-da37f8732883
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression 'Duplicate Users' =
+		let
+		    Source = #"stg_Users",
+		    #"Grouped Rows" = Table.Group(Source, {"UserID"}, {{"Count", each Table.RowCount(_), Int64.Type}}),
+		    #"Filtered Rows" = Table.SelectRows(#"Grouped Rows", each [Count] > 1)
+		in
+		    #"Filtered Rows"
+	lineageTag: ddb56bfa-e177-4a9b-9192-6c39f0c2f1ad
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression stg_Products =
+		let
+		    Source = src_Products,
+		    #"Changed Type" = Table.TransformColumnTypes(Source,{{"ProductID", Int64.Type}, {"Product", type text}, {"Description", type text}, {"Product Category", type text}}),
+		    #"Added Index" = Table.AddIndexColumn(#"Changed Type", "Index", 1, 1, Int64.Type),
+		    #"Renamed Columns" = Table.RenameColumns(#"Added Index",{{"Index", "ProductSK"}}),
+		    #"Reordered Columns" = Table.ReorderColumns(#"Renamed Columns",{"ProductSK", "ProductID", "Product", "Description", "Product Category"})
+		in
+		    #"Reordered Columns"
+	lineageTag: f639c937-317a-452e-8ea5-b58cd70660c8
+	queryGroup: '02 Transform'
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression stg_Users =
+		let
+		    Source = src_Users,
+		    #"Changed Type" = Table.TransformColumnTypes(Source,{{"UserID", Int64.Type}}),
+		    #"Added Index" = Table.AddIndexColumn(#"Changed Type", "Index", 1, 1, Int64.Type),
+		    #"Renamed Columns" = Table.RenameColumns(#"Added Index",{{"Index", "UserSK"}}),
+		    #"Reordered Columns" = Table.ReorderColumns(#"Renamed Columns",{"UserSK", "UserID", "First Name", "Last Name", "Email", "Country"})
+		in
+		    #"Reordered Columns"
+	lineageTag: 936266f6-501b-4e24-83db-090de090c69c
+	queryGroup: '02 Transform'
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression stg_Sales =
+		let
+		    Source = src_Sales,
+		    #"Trimmed Text" = Table.TransformColumns(Source,{{"Price", each Text.Select(_, {"0".."9",".",","}), type text}}),
+		    #"Changed Type" = Table.TransformColumnTypes(#"Trimmed Text",{{"Row", Int64.Type}, {"ProductID", Int64.Type}, {"UserID", Int64.Type}, {"Price", Currency.Type}, {"Units", Int64.Type}, {"Discount", Currency.Type}, {"Transaction Date Epoch", Int64.Type}, {"Departure Date Epoch", Int64.Type}}),
+		    #"Added Custom" = Table.AddColumn(#"Changed Type", "Revenue", each [Price] * [Units] * (1 - [Discount]),  Currency.Type),
+		    #"Add TransactionDateTime" = Table.AddColumn(#"Added Custom", "Transaction Date Time", each TimestampToUTC([Transaction Date Epoch]), type datetime),
+		    #"Add DepartureDateTime" = Table.AddColumn(#"Add TransactionDateTime", "Departure Date Time", each TimestampToUTC([Departure Date Epoch]), type datetime),
+		    #"Add TransactionDate" = Table.AddColumn(#"Add DepartureDateTime", "Transaction Date", each DateTime.Date([Transaction Date Time]), type date),
+		    #"Add TransactionTime" = Table.AddColumn(#"Add TransactionDate", "Transaction Time", each DateTime.Time([Transaction Date Time]), type time),
+		    #"Added TransactionDateKey" = Table.AddColumn(#"Add TransactionTime", "TransactionDateID", each Date.Year([Transaction Date])*10000 + Date.Month([Transaction Date])*100 + Date.Day([Transaction Date]), Int64.Type),
+		    #"Add DepartureDate" = Table.AddColumn(#"Added TransactionDateKey", "Departure Date", each DateTime.Date([Departure Date Time]), type date),
+		    #"Add DepartureTime" = Table.AddColumn(#"Add DepartureDate", "Departure Time", each DateTime.Time([Departure Date Time]), type time),
+		    #"Added DepartureDateKey" = Table.AddColumn(#"Add DepartureTime", "DepartureDateID", each Date.Year([Departure Date])*10000 + Date.Month([Departure Date])*100 + Date.Day([Departure Date]), Int64.Type),
+		    #"Added Index" = Table.AddIndexColumn(#"Added DepartureDateKey", "Index", 1, 1, Int64.Type),
+		    #"Removed Columns" = Table.RemoveColumns(#"Added Index",{"Transaction Date Epoch", "Departure Date Epoch", "Transaction Date Time", "Departure Date Time", "Transaction Date", "Departure Date"}),
+		    #"Reordered Columns" = Table.ReorderColumns(#"Removed Columns",{"Index", "Source Name", "Row", "ProductID", "UserID", "Price", "Units", "Discount", "Revenue", "Transaction Time", "TransactionDateID", "Departure Time", "DepartureDateID"}),
+		    #"Renamed Columns" = Table.RenameColumns(#"Reordered Columns",{{"Index", "SalesSK"}})
+		in
+		    #"Renamed Columns"
+	lineageTag: 639ee6fa-723a-49a3-8849-82f9c91f2e28
+	queryGroup: '02 Transform'
+
+	annotation PBI_NavigationStepName = Navegación
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,28 @@
+{
+  "name": "Custom",
+  "textClasses": {
+    "label": {
+      "color": "#2E2E2E"
+    },
+    "callout": {
+      "color": "#2E2E2E",
+      "fontFace": "'Segoe UI Semibold', wf_segoe-ui_semibold, helvetica, arial, sans-serif",
+      "fontSize": 20
+    },
+    "title": {
+      "color": "#2E2E2E",
+      "fontFace": "'Segoe UI Semibold', wf_segoe-ui_semibold, helvetica, arial, sans-serif",
+      "fontSize": 10
+    }
+  },
+  "dataColors": [
+    "#073590",
+    "#22C0FF",
+    "#FE0002",
+    "#F1C933",
+    "#E044A7",
+    "#744EC2",
+    "#D9B300",
+    "#D64550"
+  ]
+}

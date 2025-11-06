@@ -1,0 +1,17 @@
+relationship 5b65da56-2432-b9a4-7a8a-72c28f307dac
+	fromColumn: 'Fact Sales'.UserSK
+	toColumn: 'Dim Users'.UserSK
+
+relationship 992d03b8-4fb4-fd7d-627c-80797993a434
+	fromColumn: 'Fact Sales'.ProductSK
+	toColumn: 'Dim Products'.ProductSK
+
+relationship 095786de-5a2a-8ee0-0923-519221a4aa34
+	fromColumn: 'Fact Sales'.TransactionDateID
+	toColumn: 'Dim Calendar'.DateID
+
+relationship 8e94dffb-33ad-4a1a-0b34-2be3499b659b
+	isActive: false
+	fromColumn: 'Fact Sales'.DepartureDateID
+	toColumn: 'Dim Calendar'.DateID
+

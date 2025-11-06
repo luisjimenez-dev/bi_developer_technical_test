@@ -1,0 +1,50 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-US
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+queryGroup Utils
+
+	annotation PBI_QueryGroupOrder = 3
+
+queryGroup Utils\Parameters
+
+	annotation PBI_QueryGroupOrder = 1
+
+queryGroup Utils\Columns
+
+	annotation PBI_QueryGroupOrder = 0
+
+queryGroup '01 Source'
+
+	annotation PBI_QueryGroupOrder = 0
+
+queryGroup '02 Transform'
+
+	annotation PBI_QueryGroupOrder = 1
+
+queryGroup '03 Load'
+
+	annotation PBI_QueryGroupOrder = 2
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["src_Products","src_Sales","folderPath","LoadCsv","SalesColumns","src_Users","stg_Sales","TimestampToUTC","LocalTime","stg_Products","stg_Users","Missing","Dim Products","unknownID","unknownSK","unknownDescription","Duplicate Users","Dim Users","Dim Calendar","Fact Sales","Measures Sales"]
+
+annotation __TEdtr = 1
+
+annotation TranslationsBuilder = Version:2.2-Updated:2025-11-06
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table 'Dim Products'
+ref table 'Dim Users'
+ref table 'Dim Calendar'
+ref table 'Fact Sales'
+ref table 'Measures Sales'
+
+ref cultureInfo en-US
+

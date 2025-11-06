@@ -1,0 +1,85 @@
+/// Description
+table 'Dim Users'
+	lineageTag: f810dc13-015a-4915-bcbf-9c47e204522c
+
+	/// Description
+	column UserSK
+		dataType: int64
+		isHidden
+		isKey
+		formatString: 0
+		isAvailableInMdx: false
+		lineageTag: de7afb31-3fca-48ff-b809-c5ad34100ff5
+		summarizeBy: none
+		sourceColumn: UserSK
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Description
+	column UserID
+		dataType: int64
+		formatString: 0
+		lineageTag: 5121e20e-6170-44f2-83af-253bb82f06e7
+		summarizeBy: none
+		sourceColumn: UserID
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Description
+	column 'First Name'
+		dataType: string
+		lineageTag: a6c1b91d-ecba-401f-b12d-43e8c2883e40
+		summarizeBy: none
+		sourceColumn: First Name
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Description
+	column 'Last Name'
+		dataType: string
+		lineageTag: 02da40ac-e679-48cb-98d8-160b0ab397f2
+		summarizeBy: none
+		sourceColumn: Last Name
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Description
+	column Email
+		dataType: string
+		lineageTag: e6ad7bb9-321c-466c-8fa3-57a2c5a04f68
+		summarizeBy: none
+		sourceColumn: Email
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Description
+	column Country
+		dataType: string
+		lineageTag: dfd96cad-23e7-4f0a-9f51-7114926f2fee
+		dataCategory: Country
+		summarizeBy: none
+		sourceColumn: Country
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Dim Users' = m
+		mode: import
+		queryGroup: '03 Load'
+		source =
+				let
+				    Source = stg_Users,
+				    #"Unknown User" = #table(
+				        Table.ColumnNames(Source),
+				        {
+				            {unknownSK, unknownID, unknownDescription, unknownDescription, unknownDescription, unknownDescription}
+				        }
+				    ),
+				    #"Typed Unknown User" = Value.ReplaceType(#"Unknown User", Value.Type(Source)),
+				    #"Final Users" = Table.Combine({Source, #"Typed Unknown User"})
+				in
+				    #"Final Users"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

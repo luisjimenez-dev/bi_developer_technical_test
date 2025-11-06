@@ -1,0 +1,210 @@
+/// Description
+table 'Dim Calendar'
+	lineageTag: ea140923-001a-425d-8ff9-2ddafb427b89
+	dataCategory: Time
+
+	/// Description
+	column DateID
+		dataType: int64
+		formatString: 0
+		lineageTag: 5e0f3023-0d91-4a34-9b20-6397ade8332f
+		summarizeBy: none
+		sourceColumn: DateID
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Description
+	column Date
+		dataType: dateTime
+		isKey
+		formatString: mm/dd/yyyy
+		lineageTag: 6e07683b-9f2a-423d-92b9-82b62f87b316
+		summarizeBy: none
+		sourceColumn: Date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	/// Description
+	column Year
+		dataType: int64
+		formatString: 0
+		lineageTag: c44969bd-91c4-43a5-895e-25e4fa1c29ed
+		summarizeBy: none
+		sourceColumn: Year
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Description
+	column 'Month Number'
+		dataType: int64
+		formatString: 0
+		lineageTag: 0c92b0f5-5c0a-495c-87e9-191048f19b4b
+		summarizeBy: none
+		sourceColumn: Month Number
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Description
+	column Day
+		dataType: int64
+		formatString: 0
+		lineageTag: 0b75cd17-4234-459f-a832-039e22d86c83
+		summarizeBy: none
+		sourceColumn: Day
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Description
+	column 'Month Short'
+		dataType: string
+		lineageTag: 5186bdbc-492a-42c6-ad6f-7f96c72e8fe8
+		summarizeBy: none
+		sourceColumn: Month Short
+		sortByColumn: 'Month Number'
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Description
+	column 'Month Long'
+		dataType: string
+		lineageTag: a887ddaa-6a0b-42a4-bb85-81d94c3b2a2a
+		summarizeBy: none
+		sourceColumn: Month Long
+		sortByColumn: 'Month Number'
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Description
+	column 'Year Month Num'
+		dataType: int64
+		formatString: 0
+		lineageTag: 14976bbe-1e4f-4fd3-9c26-1d81b20314b2
+		summarizeBy: none
+		sourceColumn: Year Month Num
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Description
+	column 'Year Month Short'
+		dataType: string
+		lineageTag: 45a492f6-e41e-4d28-a62f-1d829b68b495
+		summarizeBy: none
+		sourceColumn: Year Month Short
+		sortByColumn: 'Year Month Num'
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Description
+	column 'Year Month Long'
+		dataType: string
+		lineageTag: 3d23fddf-3938-4045-a970-f32d7e2ed0d7
+		summarizeBy: none
+		sourceColumn: Year Month Long
+		sortByColumn: 'Year Month Num'
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Description
+	column 'Day Of Week Num'
+		dataType: int64
+		formatString: 0
+		lineageTag: e3d132e5-5769-434f-b5e8-ab16da56437c
+		summarizeBy: none
+		sourceColumn: Day Of Week Num
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Description
+	column 'Day Of Week Name'
+		dataType: string
+		lineageTag: 99160a1d-ffe0-4b99-b4d6-2d1d71f37ba3
+		summarizeBy: none
+		sourceColumn: Day Of Week Name
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Description
+	column 'Is Weekend'
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 6eabae11-f112-4911-9ec7-3c2c1ef27979
+		summarizeBy: none
+		sourceColumn: Is Weekend
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Description
+	column Quarter
+		dataType: int64
+		formatString: 0
+		lineageTag: b8ab0bcc-be8b-460e-be3a-0da30d074152
+		summarizeBy: none
+		sourceColumn: Quarter
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Description
+	column Week
+		dataType: int64
+		formatString: 0
+		lineageTag: 982bb126-1fa3-4b12-aa55-d7158c6ec54a
+		summarizeBy: none
+		sourceColumn: Week
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Description
+	column 'End Of Month'
+		dataType: dateTime
+		formatString: mm/dd/yyyy
+		lineageTag: 33f31dc5-14c5-443c-a471-4fcd69aef3e6
+		summarizeBy: none
+		sourceColumn: End Of Month
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	partition 'Dim Calendar' = m
+		mode: import
+		queryGroup: '03 Load'
+		source =
+				let
+				    StartDate = #date(2024, 1, 1),
+				    EndDate   = Date.From(DateTime.LocalNow()),
+				    DateList = List.Dates(StartDate, Duration.Days(EndDate - StartDate) + 1, #duration(1, 0, 0, 0)),
+				    #"Converted to Table" = Table.FromList(DateList, Splitter.SplitByNothing(), {"Date"}, null, ExtraValues.Error),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Converted to Table",{{"Date", type date}}),
+				    #"Added Year" = Table.AddColumn(#"Changed Type", "Year", each Date.Year([Date]), Int64.Type),
+				    #"Added Month Number" = Table.AddColumn(#"Added Year", "Month Number", each Date.Month([Date]), Int64.Type),
+				    #"Added Day" = Table.AddColumn(#"Added Month Number", "Day", each Date.Day([Date]), Int64.Type),
+				    #"Added Month Short" = Table.AddColumn(#"Added Day", "Month Short", each Date.ToText([Date], "MMM", "en-US"), type text),
+				    #"Added Month Long" = Table.AddColumn(#"Added Month Short", "Month Long", each Date.ToText([Date], "MMMM", "en-US"), type text),
+				    #"Added YearMonthNum" = Table.AddColumn(#"Added Month Long", "Year Month Num", each [Year]*100 + [Month Number], Int64.Type),
+				    #"Added YearMonthShort" = Table.AddColumn(#"Added YearMonthNum", "Year Month Short", each [Month Short] & " " & Text.End(Text.From([Year]), 2), type text),
+				    #"Added YearMonthLong" = Table.AddColumn(#"Added YearMonthShort", "Year Month Long", each [Month Long] & " " & Text.From([Year]), type text),
+				    #"Added DayOfWeekNum" = Table.AddColumn(#"Added YearMonthLong", "Day Of Week Num", each Date.DayOfWeek([Date], Day.Monday) + 1, Int64.Type),
+				    #"Added DayOfWeekName" = Table.AddColumn(#"Added DayOfWeekNum", "Day Of Week Name", each Date.ToText([Date], "dddd", "en-US"), type text),
+				    #"Added IsWeekend" = Table.AddColumn(#"Added DayOfWeekName", "Is Weekend", each if [Day Of Week Num] > 5 then true else false, type logical),
+				    #"Added Quarter" = Table.AddColumn(#"Added IsWeekend", "Quarter", each Date.QuarterOfYear([Date]), Int64.Type),
+				    #"Added Week" = Table.AddColumn(#"Added Quarter", "Week", each Date.WeekOfYear([Date]), Int64.Type),
+				    #"Added EndOfMonth" = Table.AddColumn(#"Added Week", "End Of Month", each Date.EndOfMonth([Date]), type date),
+				    #"Added DateKey" = Table.AddColumn(#"Added EndOfMonth", "DateID", each [Year]*10000 + [Month Number]*100 + [Day], Int64.Type),
+				    #"Reordered Columns" = Table.ReorderColumns(#"Added DateKey",{"DateID", "Date", "Year", "Month Number", "Day", "Month Short", "Month Long", "Year Month Num", "Year Month Short", "Year Month Long", "Day Of Week Num", "Day Of Week Name", "Is Weekend", "Quarter", "Week", "End Of Month"})
+				in
+				    #"Reordered Columns"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
