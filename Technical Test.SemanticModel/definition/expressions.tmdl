@@ -15,7 +15,7 @@ expression src_Products =
 expression src_Sales =
 		let
 		    Source = Folder.Files(folderPath),
-		    #"Filtered Rows" = Table.SelectRows(Source, each Text.Contains([Name], "Sales")),
+		    #"Filtered Rows" = Table.SelectRows(Source, each Text.Contains([Name], "Sales") and Text.Contains([Name], ".csv")),
 		    #"Invoked Custom Function" = Table.AddColumn(#"Filtered Rows", "Csv Content", each LoadCsv([Content], ",", 1252)),
 		    #"Removed Other Columns" = Table.SelectColumns(#"Invoked Custom Function",{"Name", "Csv Content"}),
 		    #"Expanded Csv Content" = Table.ExpandTableColumn(#"Removed Other Columns", "Csv Content", SalesColumns),
@@ -29,7 +29,7 @@ expression src_Sales =
 
 	annotation PBI_ResultType = Table
 
-expression folderPath = "C:\Users\ljt18\Documents\Luis\PBI\Ryanair\Power BI test\Current\" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+expression folderPath = "C:\Users\ljt18\Documents\Luis\PBI\pruebas\bi_developer_technical_test\" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
 	lineageTag: 7998d3cf-c0ec-44e2-8801-357c7050f333
 	queryGroup: Utils\Parameters
 
